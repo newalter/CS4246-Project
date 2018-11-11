@@ -14,9 +14,11 @@ class QAgent():
         self.actionSpace = actionSpace
 
     def move(self, observation, reward, done):
+        pos, velocity = self.process_observation(observation)
         if done:
-            self.Q[(observation[0],observation[1])] = reward
-        s_a = (self.previousObservation[0], self.previousObservation[1], self.previousAction)
+            self.Q[(pos, velocity)] = reward
+        pos, velocity = self.process_observation(self.previousObservation)
+        s_a = (pos, velocity, self.previousAction)
         self.frequency[s_a] = self.frequency.get(s_a, 0) + 1
         this_q = self.Q.get(s_a, 0)
         self.Q[s_a] = this_q + self.alpha*(self.previousReward + self.gamma * self.max_lookup(observation) - this_q)
@@ -42,8 +44,7 @@ class QAgent():
 
 
     def max_lookup(self, observation):
-        pos = observation[0]
-        velocity = observation[1]
+        pos, velocity = self.process_observation(observation)
         maxR = self.Q.get((pos,velocity), 0)
         maxR = max(maxR, self.Q.get((pos, velocity, 0), 0))
         maxR = max(maxR, self.Q.get((pos, velocity, 1), 0))
@@ -51,8 +52,7 @@ class QAgent():
         return maxR
 
     def max_arg(self, observation):
-        pos = observation[0]
-        velocity = observation[1]
+        pos, velocity = self.process_observation(observation)
         action = 0
         maxR = self.Q.get((pos, velocity, 0), 0)
         if maxR < self.Q.get((pos, velocity, 1), 0):
@@ -63,3 +63,7 @@ class QAgent():
             action = 2
         return action
 
+    def process_observation(self, observation):
+        pos = int(observation[0] * 100)
+        velocity = int(observation[1] * 100)
+        return pos, velocity
