@@ -16,10 +16,10 @@ for episode in range(EPISODES):
     action = agent.new_episode(observation= observation)
     while not done:
         observation, reward, done, info = env.step(action)
-        env.render()
+        # env.render()
         totalReward += reward
         action = agent.move(observation, reward, done)
-        print(observation, '  ', action)
+        # print(observation, '  ', action)
     print(totalReward)
     AvgReward += totalReward
 
