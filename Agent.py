@@ -1,7 +1,7 @@
 import random
 
 class QAgent():
-    IniQ = 5
+    IniQ = 0
     actionSpace = None
     totalMoves = 0
     previousAction = None
